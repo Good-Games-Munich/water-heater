@@ -20,6 +20,7 @@ import {
     Modal,
     ModalContext,
     SelectedStrings,
+    SlashCommand,
     SlashCommandContext,
     StringSelect,
     StringSelectContext,
@@ -244,6 +245,16 @@ export class WeeklyCommands {
         }
     }
 
+    @SlashCommand({
+        name: 'confirm',
+        nameLocalizations: {
+            de: 'bestätigen',
+        },
+        description: 'Legacy use /weekly confirm instead',
+        descriptionLocalizations: {
+            de: 'Legacy benutze /weekly bestätigen stattdessen',
+        },
+    })
     @Subcommand({
         name: 'confirm',
         nameLocalizations: {
@@ -292,6 +303,16 @@ export class WeeklyCommands {
         }
     }
 
+    @SlashCommand({
+        name: 'deconfirm',
+        nameLocalizations: {
+            de: 'debestätigen',
+        },
+        description: 'Legacy use /weekly deconfirm instead',
+        descriptionLocalizations: {
+            de: 'Legacy benutze /weekly debestätigen stattdessen',
+        },
+    })
     @Subcommand({
         name: 'deconfirm',
         nameLocalizations: {

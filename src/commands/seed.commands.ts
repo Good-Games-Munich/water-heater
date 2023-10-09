@@ -30,9 +30,9 @@ export class SeedCommands {
 
     @SlashCommand({
         name: 'seed',
-        description: 'Groups a seeded list of participants into the specified group size.',
+        description: 'Group seed for challonge.',
         descriptionLocalizations: {
-            de: 'Gruppiert eine seeded Liste von Teilnehmern in die angegebene Gruppengröße.',
+            de: 'Gruppen seed für challonge.',
         },
     })
     public async onSeed(
