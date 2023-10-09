@@ -1,0 +1,29 @@
+version: "3.8"
+services:
+  water-heater:
+    build:
+      dockerfile: docker/Dockerfile
+      context: .
+
+    environment:
+      POSTGRES_USER: waterHeater
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD?Missing environment variable see readme}
+      POSTGRES_DB: waterHeater
+      DISCORD_BOT_TOKEN: ${DISCORD_BOT_TOKEN?Missing environment variable see readme}
+
+    restart: always
+
+  postgres:
+    image: postgres:14.2-alpine
+
+    environment:
+      POSTGRES_USER: waterHeater
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD?Missing environment variable see readme}
+      POSTGRES_DB: waterHeater
+
+    volumes:
+      - waterHeaterPostgresqlData:/var/lib/postgresql/data
+
+volumes:
+  waterHeaterPostgresqlData:
+    driver: local

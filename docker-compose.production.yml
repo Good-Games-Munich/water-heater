@@ -1,0 +1,7 @@
+version: "3.8"
+services:
+  water-heater:
+    container_name: waterHeater
+
+  postgres:
+    container_name: waterHeaterPostgres

@@ -1,0 +1,23 @@
+version: "3.8"
+services:
+  water-heater:
+    container_name: waterHeaterDev
+
+    command: npm run start:dev
+
+    environment:
+      FORCE_COLOR: 1
+      DISCORD_DEVELOPMENT_GUILD_ID: ${DISCORD_DEVELOPMENT_GUILD_ID?Missing environment variable see readme}
+
+    volumes:
+      - ./src:/app/src
+      - ./tsconfig.json:/app/tsconfig.json
+
+    ports:
+      - ${INSPECT_PORT-9229}:9229
+
+  postgres:
+    container_name: waterHeaterPostgresDev
+
+    environment:
+      FORCE_COLOR: 1
