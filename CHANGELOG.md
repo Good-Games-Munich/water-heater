@@ -1,5 +1,10 @@
 # Changelog
 
+## 2023-10-09 - 0.0.3
+
+-   Add history command
+-   Bull guild id to weekly entity from participant entity
+
 ## 2023-10-09 - 0.0.2
 
 -   Add command alias

@@ -362,6 +362,129 @@ export class WeeklyCommands {
     }
 
     @Subcommand({
+        name: 'history',
+        nameLocalizations: {
+            de: 'historie',
+        },
+        description: 'Lists pasts weekly participants',
+        descriptionLocalizations: {
+            de: 'Listet vergangene weekly Teilnehmer auf',
+        },
+    })
+    public async onHistory(
+        @Context() [interaction]: SlashCommandContext,
+    ): Promise<InteractionResponse<boolean>> {
+        try {
+            await changeLanguage(interaction.locale);
+
+            if (!interaction.guildId) {
+                return await interaction.reply({
+                    content: t('replies:noGuildIdError'),
+                    ephemeral: true,
+                });
+            }
+
+            const pastWeeklyDates = await this.weeklyParticipantService.getWeeklyDates(
+                interaction.guildId,
+                25,
+            );
+
+            if (pastWeeklyDates.length === 0) {
+                return await interaction.reply({
+                    content: t('replies:commands.weekly.history.noPastWeeklies'),
+                    ephemeral: true,
+                });
+            }
+
+            const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(
+                new StringSelectMenuBuilder()
+                    .setCustomId(ComponentId.WEEKLY_PARTICIPANTS_HISTORY_DATES_SELECTOR)
+                    .setPlaceholder(
+                        t('ui:weekly.historyComponent.participantsHistoryDatesSelectorPlaceholder'),
+                    )
+                    .setMaxValues(pastWeeklyDates.length > 25 ? 25 : pastWeeklyDates.length)
+                    .setMinValues(1)
+                    .setOptions(
+                        pastWeeklyDates.map(pastWeeklyDate => ({
+                            label: pastWeeklyDate.toLocaleDateString('de-DE'), // Hardcoded locale since slashes seem to be broken in discord
+                            value: pastWeeklyDate.getTime().toString(),
+                        })),
+                    ),
+            );
+
+            return await interaction.reply({
+                content: t('replies:commands.weekly.history.participantsHistoryDatesSelectorOpen'),
+                components: [row],
+                ephemeral: true,
+            });
+        } catch (error) {
+            this.logger.error('History selector could not be send: ', error);
+
+            return await interaction.reply({
+                content: t('replies:unknownError'),
+                ephemeral: true,
+            });
+        }
+    }
+
+    @StringSelect(ComponentId.WEEKLY_PARTICIPANTS_HISTORY_DATES_SELECTOR)
+    public async onHistorySelected(
+        @Context() [interaction]: StringSelectContext,
+        @SelectedStrings() selected: string[],
+    ): Promise<InteractionResponse<boolean>> {
+        try {
+            await changeLanguage(interaction.locale);
+
+            if (!interaction.guildId) {
+                return await interaction.reply({
+                    content: t('replies:noGuildIdError'),
+                    ephemeral: true,
+                });
+            }
+
+            if (!selected[0]) {
+                return await interaction.reply({
+                    content: t('replies:commands.weekly.history.noDatesSelected'),
+                    ephemeral: true,
+                });
+            }
+
+            const selectedDates = selected.map(
+                selectedDate => new Date(Number.parseInt(selectedDate, 10)),
+            );
+
+            const weeklyParticipantHistories =
+                await this.weeklyParticipantService.getWeeklyParticipantHistory(
+                    interaction.guildId,
+                    selectedDates,
+                );
+
+            const historyStrings = weeklyParticipantHistories.map(weeklyParticipantHistory => {
+                const weeklyParticipants = weeklyParticipantHistory.participants.map(
+                    weeklyParticipant => weeklyParticipant.name,
+                );
+
+                return `${weeklyParticipantHistory.date.toLocaleDateString(
+                    'de-DE', // Hardcoded locale since slashes seem to be broken in discord
+                )}:\n${weeklyParticipants.join('\n')}`;
+            });
+
+            return await interaction.reply({
+                content: t('replies:commands.weekly.history.successful', {
+                    history: codeBlock(historyStrings.join('\n\n')),
+                }),
+            });
+        } catch (error) {
+            this.logger.error('Bulk deconfirm could not be submitted: ', error);
+
+            return await interaction.reply({
+                content: t('replies:unknownError'),
+                ephemeral: true,
+            });
+        }
+    }
+
+    @Subcommand({
         name: 'participants',
         nameLocalizations: {
             de: 'teilnehmer',

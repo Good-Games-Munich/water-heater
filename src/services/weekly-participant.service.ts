@@ -7,7 +7,7 @@ import { ParticipantNotFoundError } from '../shared/errors/business/participant-
 import { GuildConfigurationService } from './guild-configuration.service';
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, MoreThan, Repository } from 'typeorm';
+import { In, LessThan, MoreThan, Repository } from 'typeorm';
 
 @Injectable()
 export class WeeklyParticipantService {
@@ -19,7 +19,6 @@ export class WeeklyParticipantService {
 
         const existingParticipants = await this.weeklyParticipantRepository.findBy({
             name: In(names),
-            guildId,
             weekly,
         });
 
@@ -32,7 +31,6 @@ export class WeeklyParticipantService {
             .map(name => {
                 const weeklyParticipant = new WeeklyParticipant();
                 weeklyParticipant.name = name;
-                weeklyParticipant.guildId = guildId;
                 weeklyParticipant.weekly = weekly;
                 return weeklyParticipant;
             });
@@ -43,7 +41,6 @@ export class WeeklyParticipantService {
     public async bulkDeconfirmWeeklyParticipants(guildId: string, names: string[]): Promise<void> {
         const weeklyParticipants = await this.weeklyParticipantRepository.findBy({
             name: In(names),
-            guildId,
             weekly: await this.getOrCreateWeekly(guildId),
         });
 
@@ -60,12 +57,10 @@ export class WeeklyParticipantService {
     ): Promise<WeeklyParticipant> {
         const weeklyParticipant = new WeeklyParticipant();
         weeklyParticipant.name = name;
-        weeklyParticipant.guildId = guildId;
         weeklyParticipant.weekly = await this.getOrCreateWeekly(guildId);
 
         const existingParticipant = await this.weeklyParticipantRepository.findOneBy({
             name,
-            guildId,
             weekly: weeklyParticipant.weekly,
         });
 
@@ -88,7 +83,7 @@ export class WeeklyParticipantService {
     public async deconfirmWeeklyParticipant(guildId: string, name: string): Promise<void> {
         const weeklyParticipant = await this.weeklyParticipantRepository.findOneBy({
             name,
-            guildId,
+            weekly: { guildId },
         });
 
         if (!weeklyParticipant) {
@@ -102,14 +97,13 @@ export class WeeklyParticipantService {
         const futureWeeklies = await this.weeklyRepository.find({
             where: {
                 date: MoreThan(new Date()),
+                guildId,
             },
             relations: ['participants'],
         });
 
         for (const weekly of futureWeeklies) {
-            const participants = weekly.participants.filter(
-                participant => participant.guildId === guildId,
-            );
+            const participants = weekly.participants;
 
             if (participants.length > 0) {
                 for (const participant of participants) {
@@ -123,7 +117,6 @@ export class WeeklyParticipantService {
 
     public async getAllWeeklyParticipantsByGuildId(guildId: string): Promise<WeeklyParticipant[]> {
         return await this.weeklyParticipantRepository.findBy({
-            guildId,
             weekly: await this.getOrCreateWeekly(guildId),
         });
     }
@@ -142,13 +135,53 @@ export class WeeklyParticipantService {
             today.getDate() + daysUntilWeeklyDay,
         );
 
-        let weekly = await this.weeklyRepository.findOneBy({ date: nextWeeklyDate });
+        let weekly = await this.weeklyRepository.findOneBy({ guildId, date: nextWeeklyDate });
         if (!weekly) {
             weekly = new Weekly();
+            weekly.guildId = guildId;
             weekly.date = nextWeeklyDate;
             await this.weeklyRepository.save(weekly);
         }
 
         return weekly;
+    }
+
+    public async getWeeklyDates(guildId: string, limit: number): Promise<Date[]> {
+        const weeklies = await this.weeklyRepository.find({
+            where: {
+                guildId,
+                date: LessThan(new Date()),
+            },
+            order: {
+                date: 'DESC',
+            },
+            take: limit,
+        });
+
+        const weeklyDates = weeklies.map(weekly => weekly.date);
+
+        return weeklyDates;
+    }
+
+    public async getWeeklyParticipantHistory(
+        guildId: string,
+        dates: Date[],
+    ): Promise<Array<{ date: Date; participants: WeeklyParticipant[] }>> {
+        const weeklies = await this.weeklyRepository.find({
+            where: {
+                guildId,
+                date: In(dates),
+            },
+            relations: ['participants'],
+        });
+
+        const participantHistory = weeklies.map(weekly => {
+            return {
+                date: weekly.date,
+                participants: weekly.participants,
+            };
+        });
+
+        return participantHistory;
     }
 }

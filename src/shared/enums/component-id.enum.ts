@@ -6,4 +6,5 @@ export enum ComponentId {
     WEEKLY_PARTICIPANTS_BULK_CONFIRM_INPUT = 'weekly-participants-bulk-confirm-input',
     WEEKLY_PARTICIPANTS_CONFIRM_MODAL = 'weekly-participants-confirm-modal',
     WEEKLY_PARTICIPANTS_DECONFIRM_SELECTOR = 'weekly-participants-deconfirm-selector',
+    WEEKLY_PARTICIPANTS_HISTORY_DATES_SELECTOR = 'weekly-participants-history-dates-selector',
 }

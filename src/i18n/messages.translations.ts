@@ -35,6 +35,12 @@ const messagesTranslations = {
                         noParticipantsFound: 'There are no participants for the next weekly.',
                         successful: 'Participants: {{participants}}',
                     },
+                    history: {
+                        noPastWeeklies: 'There are no past weeklies.',
+                        noDatesSelected: 'No dates have been selected. Try again later.',
+                        participantsHistoryDatesSelectorOpen: 'Select dates to view the history:',
+                        successful: 'Participation history: {{history}}',
+                    },
                 },
                 configure: {
                     weekly: {
@@ -63,6 +69,9 @@ const messagesTranslations = {
                 },
                 bulkDeconfirmComponent: {
                     participantsSelectorPlaceholder: 'Select participants',
+                },
+                historyComponent: {
+                    participantsHistoryDatesSelectorPlaceholder: 'Select dates',
                 },
             },
             configure: {
@@ -121,6 +130,14 @@ const messagesTranslations = {
                         noParticipantsFound: 'Es gibt keine Teilnehmer für das nächste weekly.',
                         successful: 'Teilnehmer: {{participants}}',
                     },
+                    history: {
+                        noPastWeeklies: 'Es gibt keine vergangenen weeklys.',
+                        noDatesSelected:
+                            'Es wurden keine Daten ausgewählt. Versuchen Sie es später erneut.',
+                        participantsHistoryDatesSelectorOpen:
+                            'Wählen Sie Daten aus, um die Historie anzuzeigen:',
+                        successful: 'Teilnahmehistorie: {{history}}',
+                    },
                 },
                 configure: {
                     weekly: {
@@ -152,6 +169,9 @@ const messagesTranslations = {
                 },
                 bulkDeconfirmComponent: {
                     participantsSelectorPlaceholder: 'Teilnehmer auswählen',
+                },
+                historyComponent: {
+                    participantsHistoryDatesSelectorPlaceholder: 'Daten auswählen',
                 },
             },
             configure: {

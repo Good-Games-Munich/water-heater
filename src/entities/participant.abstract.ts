@@ -7,9 +7,6 @@ export abstract class Participant {
     @Column()
     public name!: string;
 
-    @Column()
-    public guildId!: string;
-
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     public entryDate!: Date;
 }
