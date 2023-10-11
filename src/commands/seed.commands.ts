@@ -87,6 +87,7 @@ export class SeedCommands {
 
             return await interaction.reply({
                 content: t('replies:commands.seed.successful', {
+                    count: seededGroups.length,
                     seededGroups: codeBlock(seededGroups.join('\n')),
                 }),
                 ephemeral: true,

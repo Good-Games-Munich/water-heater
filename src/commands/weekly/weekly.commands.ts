@@ -110,6 +110,7 @@ export class WeeklyCommands {
 
             return await interaction.reply({
                 content: t('replies:commands.weekly.bulkConfirm.successful', {
+                    count: weeklyParticipants.length,
                     participants: codeBlock(weeklyParticipants.join('\n')),
                 }),
             });
@@ -189,13 +190,6 @@ export class WeeklyCommands {
         } catch (error) {
             this.logger.error('Bulk deconfirm selector could not be send: ', error);
 
-            if (error instanceof ParticipantNotFoundError) {
-                return await interaction.reply({
-                    content: t('replies:commands.weekly.bulkDeconfirm.participantNotFound'),
-                    ephemeral: true,
-                });
-            }
-
             return await interaction.reply({
                 content: t('replies:unknownError'),
                 ephemeral: true,
@@ -232,11 +226,19 @@ export class WeeklyCommands {
 
             return await interaction.reply({
                 content: t('replies:commands.weekly.bulkDeconfirm.successful', {
+                    count: selected.length,
                     participants: codeBlock(selected.join('\n')),
                 }),
             });
         } catch (error) {
             this.logger.error('Bulk deconfirm could not be submitted: ', error);
+
+            if (error instanceof ParticipantNotFoundError) {
+                return await interaction.reply({
+                    content: t('replies:commands.weekly.bulkDeconfirm.participantNotFound'),
+                    ephemeral: true,
+                });
+            }
 
             return await interaction.reply({
                 content: t('replies:unknownError'),
@@ -521,6 +523,7 @@ export class WeeklyCommands {
 
             return await interaction.reply({
                 content: t('replies:commands.weekly.participants.successful', {
+                    count: weeklyParticipants.length,
                     participants: codeBlock(
                         weeklyParticipants
                             .map(weeklyParticipant => weeklyParticipant.name)

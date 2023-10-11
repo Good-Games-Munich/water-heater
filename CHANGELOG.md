@@ -1,5 +1,12 @@
 # Changelog
 
+## 2023-10-09 - 0.0.4
+
+-   Add plural in translations
+-   Investigate user select for confirm modal
+-   Fix handling of ParticipantNotFoundError error
+
+
 ## 2023-10-09 - 0.0.3
 
 -   Add history command
