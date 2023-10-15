@@ -1,5 +1,9 @@
 # Changelog
 
+## 2023-10-09 - 0.0.8
+
+-   Fix payout command. I do meth not math.
+
 ## 2023-10-09 - 0.0.7
 
 -   Fix payout command. I dont wana talk about it.
