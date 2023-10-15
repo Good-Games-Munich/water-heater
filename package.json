@@ -1,6 +1,6 @@
 {
   "name": "water-heater",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "A api and discord bot for Good Games Munich",
   "engines": {
     "node": "^18"

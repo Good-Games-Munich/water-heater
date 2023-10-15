@@ -8,9 +8,9 @@ export class PayoutService {
         thirtyPercent: number;
         twentyPercent: number;
     } {
-        const fiftyPercent = Math.round(amountToPayout * 0.5 * 100) / 100;
-        const thirtyPercent = Math.round(amountToPayout * 0.3 * 100) / 100;
-        const twentyPercent = Math.round(amountToPayout * 0.2 * 100) / 100;
+        const fiftyPercent = Math.floor(amountToPayout * 0.5 * 100) / 100;
+        const thirtyPercent = Math.floor(amountToPayout * 0.3 * 100) / 100;
+        const twentyPercent = Math.floor(amountToPayout * 0.2 * 100) / 100;
         const remaining = amountToPayout - fiftyPercent - thirtyPercent - twentyPercent;
 
         return { fiftyPercent, thirtyPercent, twentyPercent, remaining };
