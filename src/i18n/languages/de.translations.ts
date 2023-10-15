@@ -48,6 +48,10 @@ const enTranslations = {
                     successful: 'Teilnahmehistorie: {{history}}',
                 },
             },
+            payout: {
+                successful:
+                    '50%: {{fiftyPercent}}\n30%: {{thirtyPercent}}\n20%: {{twentyPercent}}\nRest: {{remaining}}',
+            },
             configure: {
                 weekly: {
                     day: {

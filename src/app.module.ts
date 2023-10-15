@@ -1,4 +1,5 @@
 import { GuildConfigurationWeeklyCommands } from './commands/guild-configuratio/guild-configuration-weekly.commands';
+import { PayoutCommands } from './commands/payout.commands';
 import { SeedCommands } from './commands/seed.commands';
 import { TestCommands } from './commands/test.commands';
 import { WeeklyCommands } from './commands/weekly/weekly.commands';
@@ -9,6 +10,7 @@ import { Weekly } from './entities/weekly.entity';
 import { WeeklyParticipant } from './entities/weekly-participant.entity';
 import { OnApplicationBootstrapHook } from './lifecycle/on-application-bootstrap.hook';
 import { GuildConfigurationService } from './services/guild-configuration.service';
+import { PayoutService } from './services/payout.service';
 import { SeedService } from './services/seed.service';
 import { WeeklyParticipantService } from './services/weekly-participant.service';
 import type { ModuleMetadata } from '@nestjs/common';
@@ -53,9 +55,11 @@ export class AppModule {
                 OnApplicationBootstrapHook,
                 Logger,
                 WeeklyParticipantService,
+                PayoutService,
                 SeedService,
                 GuildConfigurationService,
                 WeeklyCommands,
+                PayoutCommands,
                 SeedCommands,
                 TestCommands,
                 GuildConfigurationWeeklyCommands,

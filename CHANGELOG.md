@@ -1,5 +1,9 @@
 # Changelog
 
+## 2023-10-09 - 0.0.5
+
+-   Add payout command
+
 ## 2023-10-09 - 0.0.4
 
 -   Add plural in translations
