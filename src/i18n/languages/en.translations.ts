@@ -48,7 +48,7 @@ const enTranslations = {
             },
             payout: {
                 successful:
-                    '50%: {{fiftyPercent}}\n30%: {{thirtyPercent}}\n20%: {{twentyPercent}}\nRemaining: {{remaining}}',
+                    '50%: {{fiftyPercent}}€\n30%: {{thirtyPercent}}€\n20%: {{twentyPercent}}€\nRemaining: {{remaining}}€',
             },
             configure: {
                 weekly: {

@@ -50,7 +50,7 @@ const enTranslations = {
             },
             payout: {
                 successful:
-                    '50%: {{fiftyPercent}}\n30%: {{thirtyPercent}}\n20%: {{twentyPercent}}\nRest: {{remaining}}',
+                    '50%: {{fiftyPercent}}€\n30%: {{thirtyPercent}}€\n20%: {{twentyPercent}}€\nRest: {{remaining}}€',
             },
             configure: {
                 weekly: {
