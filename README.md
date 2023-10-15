@@ -29,6 +29,10 @@
 
 A api and discord bot for Good Games Munich.
 
+## Non technical documentation
+
+See [docs](docs/).
+
 ## Setup
 
 ### Production
