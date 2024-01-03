@@ -1,6 +1,7 @@
 import { NumberOption } from 'necord';
 
 export class PayoutDto {
+    // NumberOption decorator to define the amountToPayout property
     @NumberOption({
         name: 'amount',
         name_localizations: {

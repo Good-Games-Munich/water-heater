@@ -2,28 +2,28 @@ version: "3.8"
 services:
   water-heater:
     build:
-      dockerfile: docker/Dockerfile
-      context: .
+      dockerfile: docker/Dockerfile # specify the Dockerfile location
+      context: . # specify the build context
 
     environment:
-      POSTGRES_USER: waterHeater
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD?Missing environment variable see readme}
-      POSTGRES_DB: waterHeater
-      DISCORD_BOT_TOKEN: ${DISCORD_BOT_TOKEN?Missing environment variable see readme}
+      POSTGRES_USER: waterHeater # set the Postgres username
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD?Missing environment variable see readme} # set the Postgres password
+      POSTGRES_DB: waterHeater # set the Postgres database name
+      DISCORD_BOT_TOKEN: ${DISCORD_BOT_TOKEN?Missing environment variable see readme} # set the Discord bot token
 
-    restart: always
+    restart: always # always restart the container
 
   postgres:
-    image: postgres:14.2-alpine
+    image: postgres:14.2-alpine # use the Postgres image
 
     environment:
-      POSTGRES_USER: waterHeater
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD?Missing environment variable see readme}
-      POSTGRES_DB: waterHeater
+      POSTGRES_USER: waterHeater # set the Postgres username
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD?Missing environment variable see readme} # set the Postgres password
+      POSTGRES_DB: waterHeater # set the Postgres database name
 
     volumes:
-      - waterHeaterPostgresqlData:/var/lib/postgresql/data
+      - waterHeaterPostgresqlData:/var/lib/postgresql/data # mount the Postgres data volume
 
 volumes:
   waterHeaterPostgresqlData:
-    driver: local
+    driver: local # use the local driver for the volume

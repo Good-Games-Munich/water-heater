@@ -2,6 +2,7 @@ import { WeeklyParticipantService } from '../../services/weekly-participant.serv
 import { ComponentId } from '../../shared/enums/component-id.enum';
 import { ParticipantAlreadyConfirmedError } from '../../shared/errors/business/participant-already-confirmed.error';
 import { ParticipantNotFoundError } from '../../shared/errors/business/participant-not-found.error';
+import { getNicknameOrDisplayName } from '../../utils/interaction.util';
 import { WeeklyDecorator } from './weekly.commands-group';
 import { Injectable, Logger } from '@nestjs/common';
 import type { InteractionResponse, ModalActionRowComponentBuilder } from 'discord.js';
@@ -282,7 +283,7 @@ export class WeeklyCommands {
 
             await this.weeklyParticipantService.confirmNewWeeklyParticipant(
                 interaction.guildId,
-                interaction.user.displayName,
+                getNicknameOrDisplayName(interaction),
             );
 
             return await interaction.reply({
@@ -340,7 +341,7 @@ export class WeeklyCommands {
 
             await this.weeklyParticipantService.deconfirmWeeklyParticipant(
                 interaction.guildId,
-                interaction.user.displayName,
+                getNicknameOrDisplayName(interaction),
             );
 
             return await interaction.reply({

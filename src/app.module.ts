@@ -22,12 +22,16 @@ import { NecordModule } from 'necord';
 @Module({})
 // eslint-disable-next-line @typescript-eslint/no-extraneous-class
 export class AppModule {
+    // static register method that returns an object with module, imports, and providers properties
     public static register(testing = false) {
+        // array of modules to import
         const imports: ModuleMetadata['imports'] = [
+            // ConfigModule for root
             ConfigModule.forRoot({
                 ignoreEnvFile: true,
                 isGlobal: true,
             }),
+            // TypeOrmModule for root or async. Testing is true if the application is running in a test environment
             ...(testing
                 ? [
                       TypeOrmModule.forRoot({
@@ -43,21 +47,28 @@ export class AppModule {
                           useClass: OrmConfigService,
                       }),
                   ]),
+            // NecordModule for root or async
             NecordModule.forRootAsync({
                 useClass: NecordConfigService,
             }),
+            // TypeOrmModule for feature
             TypeOrmModule.forFeature([WeeklyParticipant, Weekly, GuildConfiguration]),
         ];
+        // object with module, imports, and providers properties
         return {
             module: AppModule,
             imports,
             providers: [
+                // OnApplicationBootstrapHook to execute code after the application has been bootstrapped
                 OnApplicationBootstrapHook,
+                // Logger to log messages
                 Logger,
+                // services to interact with the database
                 WeeklyParticipantService,
                 PayoutService,
                 SeedService,
                 GuildConfigurationService,
+                // commands to handle various Discord bot commands
                 WeeklyCommands,
                 PayoutCommands,
                 SeedCommands,

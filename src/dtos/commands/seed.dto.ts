@@ -1,6 +1,7 @@
 import { NumberOption } from 'necord';
 
 export class SeedDto {
+    // NumberOption decorator to define the numberOfGroups property
     @NumberOption({
         name: 'groups',
         name_localizations: {

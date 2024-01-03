@@ -11,12 +11,14 @@ import { In, LessThan, MoreThan, Repository } from 'typeorm';
 
 @Injectable()
 export class WeeklyParticipantService {
+    // Method to bulk confirm weekly participants
     public async bulkConfirmWeeklyParticipants(
         guildId: string,
         names: string[],
     ): Promise<WeeklyParticipant[]> {
         const weekly = await this.getOrCreateWeekly(guildId);
 
+        // Get the existing participants
         const existingParticipants = await this.weeklyParticipantRepository.findBy({
             name: In(names),
             weekly,
@@ -26,6 +28,7 @@ export class WeeklyParticipantService {
             existingParticipant => existingParticipant.name,
         );
 
+        // Create new participants for the names that are not already confirmed
         const newParticipants = names
             .filter(name => !existingParticipantNames.includes(name))
             .map(name => {
@@ -38,12 +41,14 @@ export class WeeklyParticipantService {
         return await this.weeklyParticipantRepository.save([...newParticipants]);
     }
 
+    // Method to bulk deconfirm weekly participants
     public async bulkDeconfirmWeeklyParticipants(guildId: string, names: string[]): Promise<void> {
         const weeklyParticipants = await this.weeklyParticipantRepository.findBy({
             name: In(names),
             weekly: await this.getOrCreateWeekly(guildId),
         });
 
+        // Check if participants were found
         if (weeklyParticipants.length !== names.length) {
             throw new ParticipantNotFoundError();
         }
@@ -51,6 +56,7 @@ export class WeeklyParticipantService {
         await this.weeklyParticipantRepository.remove(weeklyParticipants);
     }
 
+    // Method to confirm a new weekly participant
     public async confirmNewWeeklyParticipant(
         guildId: string,
         name: string,
@@ -59,11 +65,13 @@ export class WeeklyParticipantService {
         weeklyParticipant.name = name;
         weeklyParticipant.weekly = await this.getOrCreateWeekly(guildId);
 
+        // Check if the participant is already confirmed
         const existingParticipant = await this.weeklyParticipantRepository.findOneBy({
             name,
             weekly: weeklyParticipant.weekly,
         });
 
+        // Throw an error if the participant is already confirmed
         if (existingParticipant) {
             throw new ParticipantAlreadyConfirmedError();
         }
@@ -71,6 +79,7 @@ export class WeeklyParticipantService {
         return await this.weeklyParticipantRepository.save(weeklyParticipant);
     }
 
+    // Constructor that injects repositories and services
     public constructor(
         @InjectRepository(WeeklyParticipant)
         private readonly weeklyParticipantRepository: Repository<WeeklyParticipant>,
@@ -80,12 +89,14 @@ export class WeeklyParticipantService {
         private readonly guildConfigurationService: GuildConfigurationService,
     ) {}
 
+    // Method to deconfirm a weekly participant
     public async deconfirmWeeklyParticipant(guildId: string, name: string): Promise<void> {
         const weeklyParticipant = await this.weeklyParticipantRepository.findOneBy({
             name,
             weekly: { guildId },
         });
 
+        // Check if a participant was found
         if (!weeklyParticipant) {
             throw new ParticipantNotFoundError();
         }
@@ -93,6 +104,7 @@ export class WeeklyParticipantService {
         await this.weeklyParticipantRepository.remove(weeklyParticipant);
     }
 
+    // Method to delete future weeklies
     public async deleteFutureWeeklies(guildId: string): Promise<void> {
         const futureWeeklies = await this.weeklyRepository.find({
             where: {
@@ -102,6 +114,7 @@ export class WeeklyParticipantService {
             relations: ['participants'],
         });
 
+        // Delete all future weeklies. This will also delete all participants of the weeklies
         for (const weekly of futureWeeklies) {
             const participants = weekly.participants;
 
@@ -115,18 +128,23 @@ export class WeeklyParticipantService {
         }
     }
 
+    // Method to get all weekly participants by guild ID
     public async getAllWeeklyParticipantsByGuildId(guildId: string): Promise<WeeklyParticipant[]> {
         return await this.weeklyParticipantRepository.findBy({
             weekly: await this.getOrCreateWeekly(guildId),
         });
     }
 
+    // Method to get or create a weekly entity
     private async getOrCreateWeekly(guildId: string): Promise<Weekly> {
+        // Get the guild configuration
         const guildConfiguration =
             await this.guildConfigurationService.getGuildConfiguration(guildId);
 
         const weeklyDay = guildConfiguration.weeklyDay;
         const today = new Date();
+
+        // Calculate the days until the next weekly day
         const daysUntilWeeklyDay =
             (Object.keys(Day).indexOf(weeklyDay.toUpperCase()) - today.getDay() + 7) % 7;
         const nextWeeklyDate = new Date(
@@ -135,7 +153,10 @@ export class WeeklyParticipantService {
             today.getDate() + daysUntilWeeklyDay,
         );
 
+        // Get the next weekly
         let weekly = await this.weeklyRepository.findOneBy({ guildId, date: nextWeeklyDate });
+
+        // Create a new weekly if none was found
         if (!weekly) {
             weekly = new Weekly();
             weekly.guildId = guildId;
@@ -146,6 +167,7 @@ export class WeeklyParticipantService {
         return weekly;
     }
 
+    // Method to get weekly dates
     public async getWeeklyDates(guildId: string, limit: number): Promise<Date[]> {
         const weeklies = await this.weeklyRepository.find({
             where: {
@@ -163,6 +185,7 @@ export class WeeklyParticipantService {
         return weeklyDates;
     }
 
+    // Method to get weekly participant history
     public async getWeeklyParticipantHistory(
         guildId: string,
         dates: Date[],
@@ -175,6 +198,7 @@ export class WeeklyParticipantService {
             relations: ['participants'],
         });
 
+        // Map the weeklies to the participant history
         const participantHistory = weeklies.map(weekly => {
             return {
                 date: weekly.date,

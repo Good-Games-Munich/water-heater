@@ -23,11 +23,13 @@ import {
 
 @Injectable()
 export class SeedCommands {
+    // Constructor that injects Logger and SeedService
     public constructor(
         private readonly logger: Logger,
         private readonly seedService: SeedService,
     ) {}
 
+    // SlashCommand decorator to define the onSeed method as a slash command
     @SlashCommand({
         name: 'seed',
         description: 'Group seed for challonge.',
@@ -35,6 +37,7 @@ export class SeedCommands {
             de: 'Gruppen seed für challonge.',
         },
     })
+    // Method to handle the seed command
     public async onSeed(
         @Context() [interaction]: SlashCommandContext,
         @Options() { numberOfGroups }: SeedDto,
@@ -42,11 +45,13 @@ export class SeedCommands {
         try {
             await changeLanguage(interaction.locale);
 
+            // Create a text input for the seeded list
             const seededListInput = new TextInputBuilder()
                 .setCustomId(ComponentId.SEEDED_LIST_INPUT)
                 .setLabel(t('ui:seedModal.seededListInputLabel'))
                 .setStyle(TextInputStyle.Paragraph);
 
+            // Create a modal for the seed command
             const modal = new ModalBuilder()
                 .setTitle(t('ui:seedModal.title'))
                 .setCustomId(`${ComponentId.SEED_MODAL}/${numberOfGroups}`)
@@ -56,12 +61,14 @@ export class SeedCommands {
                     ]),
                 ]);
 
+            // Show the modal to the user
             await interaction.showModal(modal);
 
             return undefined;
         } catch (error) {
             this.logger.error('Seeding modal could not be opened: ', error);
 
+            // Reply with an error message if the modal could not be opened
             return await interaction.reply({
                 content: t('replies:unknownError'),
                 ephemeral: true,
@@ -69,7 +76,9 @@ export class SeedCommands {
         }
     }
 
+    // Modal decorator to define the onSeedSubmit method as a modal
     @Modal(`${ComponentId.SEED_MODAL}/:numberOfGroups`)
+    // Method to handle the submission of the seed modal
     public async onSeedSubmit(
         @Context() [interaction]: ModalContext,
         @ModalParam('numberOfGroups') numberOfGroups: string,
@@ -77,14 +86,18 @@ export class SeedCommands {
         try {
             await changeLanguage(interaction.locale);
 
+            // Get the seeded list from the text input
             const seededList = interaction.fields
                 .getTextInputValue(ComponentId.SEEDED_LIST_INPUT)
                 .split('\n');
+
+            // Generate seeded groups using the SeedService
             const seededGroups = this.seedService.generateSeededGroups(
                 Number.parseInt(numberOfGroups, 10),
                 seededList,
             );
 
+            // Reply with the seeded groups
             return await interaction.reply({
                 content: t('replies:commands.seed.successful', {
                     count: seededGroups.length,
@@ -95,6 +108,7 @@ export class SeedCommands {
         } catch (error) {
             this.logger.error('Seesing modal could not be submitted: ', error);
 
+            // Reply with an error message if the modal could not be submitted
             return await interaction.reply({
                 content: t('replies:unknownError'),
                 ephemeral: true,
