@@ -15,6 +15,7 @@ services:
 
     ports:
       - ${INSPECT_PORT-9229}:9229 # map the container's 9229 port to the host's INSPECT_PORT or 9229 if INSPECT_PORT is not set
+      - ${APPLICATION_PORT-3200}:80 # map the container's 80 port to the host's APPLICATION_PORT or 3200 if APPLICATION_PORT is not set
 
   postgres:
     container_name: waterHeaterPostgresDev # set the container name for the development environment

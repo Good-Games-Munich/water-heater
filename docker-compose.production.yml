@@ -3,5 +3,23 @@ services:
   water-heater:
     container_name: waterHeater # set the container name for the water-heater service
 
+    # Configurations: https://github.com/dani-garcia/vaultwarden/blob/main/.env.template
+    environment:
+      # Reverse proxy config. See: https://github.com/Good-Games-Munich/nginx
+      VIRTUAL_HOST: ${HOST?Missing environment variable see readme}
+      VIRTUAL_PORT: 80 # Port of service to procy inside container
+      LETSENCRYPT_HOST: ${HOST:?Missing environment variable see readme}
+
+      # Reverse proxy network. See: https://github.com/Good-Games-Munich/nginx
+    networks:
+      - default
+      - nginxproxynet
+
   postgres:
     container_name: waterHeaterPostgres # set the container name for the postgres service
+
+# Reverse proxy network. See: https://github.com/Good-Games-Munich/nginx
+networks:
+  nginxproxynet:
+    name: nginxproxynet
+    external: true

@@ -1,7 +1,9 @@
+import type { WeeklyParticipant } from '../../entities/weekly-participant.entity';
 import { WeeklyParticipantService } from '../../services/weekly-participant.service';
 import { ComponentId } from '../../shared/enums/component-id.enum';
 import { ParticipantAlreadyConfirmedError } from '../../shared/errors/business/participant-already-confirmed.error';
 import { ParticipantNotFoundError } from '../../shared/errors/business/participant-not-found.error';
+import { WeeklyNotFoundError } from '../../shared/errors/business/weekly-not-found.error';
 import { getNicknameOrDisplayName } from '../../utils/interaction.util';
 import { WeeklyDecorator } from './weekly.commands-group';
 import { Injectable, Logger } from '@nestjs/common';
@@ -155,10 +157,19 @@ export class WeeklyCommands {
                 });
             }
 
-            const weeklyParticipants =
-                await this.weeklyParticipantService.getAllWeeklyParticipantsByGuildId(
-                    interaction.guildId,
-                );
+            let weeklyParticipants: WeeklyParticipant[];
+            try {
+                weeklyParticipants =
+                    await this.weeklyParticipantService.getAllWeeklyParticipantsByGuildId(
+                        interaction.guildId,
+                    );
+            } catch (error) {
+                if (error instanceof WeeklyNotFoundError) {
+                    weeklyParticipants = [];
+                } else {
+                    throw error;
+                }
+            }
 
             if (weeklyParticipants.length === 0) {
                 return await interaction.reply({
@@ -510,10 +521,19 @@ export class WeeklyCommands {
                 });
             }
 
-            const weeklyParticipants =
-                await this.weeklyParticipantService.getAllWeeklyParticipantsByGuildId(
-                    interaction.guildId,
-                );
+            let weeklyParticipants: WeeklyParticipant[];
+            try {
+                weeklyParticipants =
+                    await this.weeklyParticipantService.getAllWeeklyParticipantsByGuildId(
+                        interaction.guildId,
+                    );
+            } catch (error) {
+                if (error instanceof WeeklyNotFoundError) {
+                    weeklyParticipants = [];
+                } else {
+                    throw error;
+                }
+            }
 
             if (weeklyParticipants.length === 0) {
                 return await interaction.reply({

@@ -5,6 +5,7 @@ import { TestCommands } from './commands/test.commands';
 import { WeeklyCommands } from './commands/weekly/weekly.commands';
 import { NecordConfigService } from './configs/necord-config.service';
 import { OrmConfigService } from './configs/orm-config.service';
+import { WeeklyController } from './controllers/weekly.controller';
 import { GuildConfiguration } from './entities/guild-configuration.entity';
 import { Weekly } from './entities/weekly.entity';
 import { WeeklyParticipant } from './entities/weekly-participant.entity';
@@ -75,6 +76,7 @@ export class AppModule {
                 TestCommands,
                 GuildConfigurationWeeklyCommands,
             ],
+            controllers: [WeeklyController],
         };
     }
 }

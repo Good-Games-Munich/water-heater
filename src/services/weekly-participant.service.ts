@@ -3,6 +3,7 @@ import { WeeklyParticipant } from '../entities/weekly-participant.entity';
 import { Day } from '../shared/enums/day.enum';
 import { ParticipantAlreadyConfirmedError } from '../shared/errors/business/participant-already-confirmed.error';
 import { ParticipantNotFoundError } from '../shared/errors/business/participant-not-found.error';
+import { WeeklyNotFoundError } from '../shared/errors/business/weekly-not-found.error';
 // eslint-disable-next-line import/no-cycle
 import { GuildConfigurationService } from './guild-configuration.service';
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
@@ -130,21 +131,50 @@ export class WeeklyParticipantService {
 
     // Method to get all weekly participants by guild ID
     public async getAllWeeklyParticipantsByGuildId(guildId: string): Promise<WeeklyParticipant[]> {
+        const weekly = await this.getWeekly(guildId);
+
+        // Check if a weekly was found
+        if (!weekly) {
+            throw new WeeklyNotFoundError();
+        }
+
         return await this.weeklyParticipantRepository.findBy({
-            weekly: await this.getOrCreateWeekly(guildId),
+            weekly,
         });
     }
 
     // Method to get or create a weekly entity
     private async getOrCreateWeekly(guildId: string): Promise<Weekly> {
-        // Get the guild configuration
+        let weekly = await this.getWeekly(guildId);
+
+        if (!weekly) {
+            weekly = new Weekly();
+            weekly.guildId = guildId;
+            const guildConfiguration =
+                await this.guildConfigurationService.getGuildConfiguration(guildId);
+            const weeklyDay = guildConfiguration.weeklyDay;
+            const today = new Date();
+            const daysUntilWeeklyDay =
+                (Object.keys(Day).indexOf(weeklyDay.toUpperCase()) - today.getDay() + 7) % 7;
+            weekly.date = new Date(
+                today.getFullYear(),
+                today.getMonth(),
+                today.getDate() + daysUntilWeeklyDay,
+            );
+            await this.weeklyRepository.save(weekly);
+        }
+
+        return weekly;
+    }
+
+    // Method to get a weekly entity
+    private async getWeekly(guildId: string): Promise<Weekly | null> {
         const guildConfiguration =
             await this.guildConfigurationService.getGuildConfiguration(guildId);
 
         const weeklyDay = guildConfiguration.weeklyDay;
         const today = new Date();
 
-        // Calculate the days until the next weekly day
         const daysUntilWeeklyDay =
             (Object.keys(Day).indexOf(weeklyDay.toUpperCase()) - today.getDay() + 7) % 7;
         const nextWeeklyDate = new Date(
@@ -153,18 +183,7 @@ export class WeeklyParticipantService {
             today.getDate() + daysUntilWeeklyDay,
         );
 
-        // Get the next weekly
-        let weekly = await this.weeklyRepository.findOneBy({ guildId, date: nextWeeklyDate });
-
-        // Create a new weekly if none was found
-        if (!weekly) {
-            weekly = new Weekly();
-            weekly.guildId = guildId;
-            weekly.date = nextWeeklyDate;
-            await this.weeklyRepository.save(weekly);
-        }
-
-        return weekly;
+        return await this.weeklyRepository.findOneBy({ guildId, date: nextWeeklyDate });
     }
 
     // Method to get weekly dates

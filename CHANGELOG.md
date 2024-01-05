@@ -1,5 +1,9 @@
 # Changelog
 
+## 2024-01-05 - 0.1.0
+
+-   Add endpoint to retrieve all participants
+
 ## 2023-10-09 - 0.0.9
 
 -   Fix payout command... Dont ask.
