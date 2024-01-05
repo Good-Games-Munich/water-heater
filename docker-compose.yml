@@ -14,7 +14,7 @@ services:
     restart: always # always restart the container
 
   postgres:
-    image: postgres:14.2-alpine # use the Postgres image
+    image: postgres:14.10-alpine # use the Postgres image
 
     environment:
       POSTGRES_USER: waterHeater # set the Postgres username
