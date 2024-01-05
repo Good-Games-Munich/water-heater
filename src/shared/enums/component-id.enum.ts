@@ -1,3 +1,4 @@
+// Enum values for various component IDs
 export enum ComponentId {
     DEBUG_CANNEL_SELECTOR = 'debug-channel-selector',
     SEEDED_LIST_INPUT = 'seeded-list-input',

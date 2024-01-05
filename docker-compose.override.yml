@@ -1,23 +1,23 @@
 version: "3.8"
 services:
   water-heater:
-    container_name: waterHeaterDev
+    container_name: waterHeaterDev # set the container name for the development environment
 
-    command: npm run start:dev
+    command: npm run start:dev # run the start:dev script
 
     environment:
-      FORCE_COLOR: 1
-      DISCORD_DEVELOPMENT_GUILD_ID: ${DISCORD_DEVELOPMENT_GUILD_ID?Missing environment variable see readme}
+      FORCE_COLOR: 1 # set the FORCE_COLOR environment variable to 1
+      DISCORD_DEVELOPMENT_GUILD_ID: ${DISCORD_DEVELOPMENT_GUILD_ID?Missing environment variable see readme} # set the Discord development guild ID
 
     volumes:
-      - ./src:/app/src
-      - ./tsconfig.json:/app/tsconfig.json
+      - ./src:/app/src # mount the src directory to the container's /app/src directory
+      - ./tsconfig.json:/app/tsconfig.json # mount the tsconfig.json file to the container's /app/tsconfig.json file
 
     ports:
-      - ${INSPECT_PORT-9229}:9229
+      - ${INSPECT_PORT-9229}:9229 # map the container's 9229 port to the host's INSPECT_PORT or 9229 if INSPECT_PORT is not set
 
   postgres:
-    container_name: waterHeaterPostgresDev
+    container_name: waterHeaterPostgresDev # set the container name for the development environment
 
     environment:
-      FORCE_COLOR: 1
+      FORCE_COLOR: 1 # set the FORCE_COLOR environment variable to 1

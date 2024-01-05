@@ -7,17 +7,19 @@ import type { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeor
 
 @Injectable()
 export class OrmConfigService implements TypeOrmOptionsFactory {
+    // Constructor that injects ConfigService
     public constructor(private readonly configService: ConfigService) {}
 
+    // Method to create TypeORM options
     public createTypeOrmOptions(): TypeOrmModuleOptions {
         return {
-            type: 'postgres',
-            host: 'postgres',
-            username: this.configService.get<string>('POSTGRES_USER'),
-            password: this.configService.get<string>('POSTGRES_PASSWORD'),
-            database: this.configService.get<string>('POSTGRES_DB'),
-            synchronize: true,
-            entities: [WeeklyParticipant, Weekly, GuildConfiguration],
+            type: 'postgres', // Set the database type to PostgreSQL
+            host: 'postgres', // Set the database host to 'postgres'
+            username: this.configService.get<string>('POSTGRES_USER'), // Get the PostgreSQL username from the environment variables
+            password: this.configService.get<string>('POSTGRES_PASSWORD'), // Get the PostgreSQL password from the environment variables
+            database: this.configService.get<string>('POSTGRES_DB'), // Get the PostgreSQL database name from the environment variables
+            synchronize: true, // Automatically synchronize the database schema with the entities
+            entities: [WeeklyParticipant, Weekly, GuildConfiguration], // Set the entities to be used by TypeORM
         };
     }
 }

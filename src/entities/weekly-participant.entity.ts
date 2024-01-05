@@ -5,6 +5,7 @@ import { Entity, ManyToOne } from 'typeorm';
 
 @Entity()
 export class WeeklyParticipant extends Participant {
+    // Many-to-one relationship with Weekly entity
     @ManyToOne(() => Weekly)
     public weekly!: Weekly;
 }
