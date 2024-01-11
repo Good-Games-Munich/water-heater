@@ -1,5 +1,9 @@
 # Changelog
 
+## 2024-01-11 - 0.1.2
+
+-   Fix db restart issue
+
 ## 2024-01-05 - 0.1.1
 
 -   Enable CORS for all origins

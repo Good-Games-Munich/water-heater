@@ -13,6 +13,9 @@ services:
 
     restart: always # always restart the container
 
+    depends_on:
+      - postgres # depend on the Postgres service
+
   postgres:
     image: postgres:14.2-alpine # use the Postgres image
 
@@ -23,6 +26,8 @@ services:
 
     volumes:
       - waterHeaterPostgresqlData:/var/lib/postgresql/data # mount the Postgres data volume
+
+    restart: always # always restart the container
 
 volumes:
   waterHeaterPostgresqlData:
