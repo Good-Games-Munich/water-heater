@@ -1,5 +1,10 @@
 # Changelog
 
+## 2024-01-18 - 0.2.0
+
+-   Update bulk-confirm command to support discord user select
+-   Fix seed command
+
 ## 2024-01-11 - 0.1.2
 
 -   Fix db restart issue
