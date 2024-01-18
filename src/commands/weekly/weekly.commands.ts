@@ -10,24 +10,35 @@ import { Injectable, Logger } from '@nestjs/common';
 import type { InteractionResponse, ModalActionRowComponentBuilder } from 'discord.js';
 import {
     ActionRowBuilder,
+    ButtonBuilder,
+    ButtonStyle,
     codeBlock,
     ModalBuilder,
     PermissionFlagsBits,
     StringSelectMenuBuilder,
     TextInputBuilder,
     TextInputStyle,
+    UserSelectMenuBuilder,
 } from 'discord.js';
 import { changeLanguage, t } from 'i18next';
 import {
+    Button,
+    ButtonContext,
     Context,
+    ISelectedMembers,
+    ISelectedUsers,
     Modal,
     ModalContext,
+    SelectedMembers,
     SelectedStrings,
+    SelectedUsers,
     SlashCommand,
     SlashCommandContext,
     StringSelect,
     StringSelectContext,
     Subcommand,
+    UserSelect,
+    UserSelectContext,
 } from 'necord';
 
 @Injectable()
@@ -50,6 +61,52 @@ export class WeeklyCommands {
     })
     public async onBulkConfirm(
         @Context() [interaction]: SlashCommandContext,
+    ): Promise<InteractionResponse<boolean> | undefined> {
+        try {
+            await changeLanguage(interaction.locale);
+
+            if (!interaction.memberPermissions?.has(PermissionFlagsBits.Administrator)) {
+                return await interaction.reply({
+                    content: t('replies:noPermissionError'),
+                    ephemeral: true,
+                });
+            }
+
+            const selectRow = new ActionRowBuilder<UserSelectMenuBuilder>().addComponents(
+                new UserSelectMenuBuilder()
+                    .setCustomId(ComponentId.WEEKLY_PARTICIPANTS_CONFIRM_SELECTOR)
+                    .setPlaceholder(
+                        t('ui:weekly.bulkConfirmComponent.participantsSelectorPlaceholder'),
+                    )
+                    .setMinValues(1)
+                    .setMaxValues(25),
+            );
+
+            const freestyleRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
+                new ButtonBuilder()
+                    .setCustomId(ComponentId.WEEKLY_PARTICIPANTS_BULK_CONFIRM_FREESTYLE_BUTTON)
+                    .setLabel(t('ui:weekly.bulkConfirmComponent.freestyleButtonLabel'))
+                    .setStyle(ButtonStyle.Primary),
+            );
+
+            return await interaction.reply({
+                content: t('replies:commands.weekly.bulkConfirm.bulkConfirmComponentShown'),
+                components: [selectRow, freestyleRow],
+                ephemeral: true,
+            });
+        } catch (error) {
+            this.logger.error('Bulk confirm components could not be send: ', error);
+
+            return await interaction.reply({
+                content: t('replies:unknownError'),
+                ephemeral: true,
+            });
+        }
+    }
+
+    @Button(ComponentId.WEEKLY_PARTICIPANTS_BULK_CONFIRM_FREESTYLE_BUTTON)
+    public async onBulkConfirmFreestyleButton(
+        @Context() [interaction]: ButtonContext,
     ): Promise<InteractionResponse<boolean> | undefined> {
         try {
             await changeLanguage(interaction.locale);
@@ -88,12 +145,97 @@ export class WeeklyCommands {
         }
     }
 
+    @UserSelect(ComponentId.WEEKLY_PARTICIPANTS_CONFIRM_SELECTOR)
+    public async onBulkConfirmSelected(
+        @Context() [interaction]: UserSelectContext,
+        @SelectedUsers() users: ISelectedUsers,
+        @SelectedMembers() members: ISelectedMembers,
+    ): Promise<InteractionResponse<boolean> | undefined> {
+        try {
+            await changeLanguage(interaction.locale);
+
+            if (!interaction.memberPermissions?.has(PermissionFlagsBits.Administrator)) {
+                return await interaction.reply({
+                    content: t('replies:noPermissionError'),
+                    ephemeral: true,
+                });
+            }
+
+            if (!interaction.guildId) {
+                return await interaction.reply({
+                    content: t('replies:noGuildIdError'),
+                    ephemeral: true,
+                });
+            }
+
+            let weeklyParticipants: string[] = [];
+
+            try {
+                weeklyParticipants = members.map(member => {
+                    if ('nickname' in member && member.nickname) {
+                        return member.nickname;
+                    }
+
+                    if ('nick' in member && member.nick) {
+                        return member.nick;
+                    }
+
+                    if ('displayName' in member && member.displayName) {
+                        return member.displayName;
+                    }
+
+                    throw new Error('Could not get nickname or display name');
+                });
+            } catch (error) {
+                this.logger.error('Bulk confirm modal could not submitted: ', error);
+
+                return await interaction.reply({
+                    content: t('replies:unknownError'),
+                    ephemeral: true,
+                });
+            }
+
+            if (weeklyParticipants.length === 0) {
+                return await interaction.reply({
+                    content: t('replies:commands.weekly.bulkConfirm.noParticipantsSelected'),
+                    ephemeral: true,
+                });
+            }
+
+            await this.weeklyParticipantService.bulkConfirmWeeklyParticipants(
+                interaction.guildId,
+                weeklyParticipants,
+            );
+
+            return await interaction.reply({
+                content: t('replies:commands.weekly.bulkConfirm.successful', {
+                    count: weeklyParticipants.length,
+                    participants: codeBlock(weeklyParticipants.join('\n')),
+                }),
+            });
+        } catch (error) {
+            this.logger.error('Bulk confirm modal could not be opened: ', error);
+
+            return await interaction.reply({
+                content: t('replies:unknownError'),
+                ephemeral: true,
+            });
+        }
+    }
+
     @Modal(ComponentId.WEEKLY_PARTICIPANTS_CONFIRM_MODAL)
     public async onBulkConfirmSubmit(
         @Context() [interaction]: ModalContext,
     ): Promise<InteractionResponse<boolean>> {
         try {
             await changeLanguage(interaction.locale);
+
+            if (!interaction.memberPermissions?.has(PermissionFlagsBits.Administrator)) {
+                return await interaction.reply({
+                    content: t('replies:noPermissionError'),
+                    ephemeral: true,
+                });
+            }
 
             if (!interaction.guildId) {
                 return await interaction.reply({
@@ -105,6 +247,13 @@ export class WeeklyCommands {
             const weeklyParticipants = interaction.fields
                 .getTextInputValue(ComponentId.WEEKLY_PARTICIPANTS_BULK_CONFIRM_INPUT)
                 .split('\n');
+
+            if (weeklyParticipants.length === 0) {
+                return await interaction.reply({
+                    content: t('replies:commands.weekly.bulkConfirm.noParticipantsProvided'),
+                    ephemeral: true,
+                });
+            }
 
             await this.weeklyParticipantService.bulkConfirmWeeklyParticipants(
                 interaction.guildId,
@@ -216,6 +365,13 @@ export class WeeklyCommands {
     ): Promise<InteractionResponse<boolean>> {
         try {
             await changeLanguage(interaction.locale);
+
+            if (!interaction.memberPermissions?.has(PermissionFlagsBits.Administrator)) {
+                return await interaction.reply({
+                    content: t('replies:noPermissionError'),
+                    ephemeral: true,
+                });
+            }
 
             if (!interaction.guildId) {
                 return await interaction.reply({

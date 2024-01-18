@@ -14,6 +14,10 @@ const enTranslations = {
                     successful_one: 'The weekly participant: {{participants}} has been confirmed!',
                     successful_other:
                         'The weekly participants: {{participants}} have been confirmed!',
+                    noParticipantsSelected: 'No participants were selected.',
+                    noParticipantsProvided: 'No participants were provided.',
+                    bulkConfirmComponentShown:
+                        'You can select users or make a freestyle entry. Sadly discord does not allow to do both in a modal.',
                 },
                 bulkDeconfirm: {
                     noParticipantsFound: 'There are no participants to deconfirm.',
@@ -71,6 +75,10 @@ const enTranslations = {
             seededListInputLabel: 'Seeded list',
         },
         weekly: {
+            bulkConfirmComponent: {
+                participantsSelectorPlaceholder: 'Select participants',
+                freestyleButtonLabel: 'Freestyle',
+            },
             bulkConfirmModal: {
                 title: 'To confirm weekly participants',
                 participantsBulkConfirmInputLabel: 'Participants',
