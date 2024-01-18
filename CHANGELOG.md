@@ -1,5 +1,9 @@
 # Changelog
 
+## 2024-01-18 - 0.2.0
+
+-   Fix seed command
+
 ## 2024-01-11 - 0.1.2
 
 -   Fix db restart issue
