@@ -1,4 +1,4 @@
-ARG VERSION=18.17-alpine
+ARG VERSION=18.20-alpine
 FROM node:${VERSION} as build
 
 WORKDIR /app
