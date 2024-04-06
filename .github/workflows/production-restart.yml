@@ -1,7 +1,7 @@
 ---
 # https://github.github.io/actions-cheat-sheet/actions-cheat-sheet.pdf
 # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#name
-name: "Resrtar service on production"
+name: "Restart service on production"
 
 # Define the trigger. https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#on
 on:
