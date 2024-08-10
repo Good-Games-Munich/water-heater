@@ -17,7 +17,7 @@ services:
       - postgres # depend on the Postgres service
 
   postgres:
-    image: postgres:14.2-alpine # use the Postgres image
+    image: postgres:16.4-alpine # use the Postgres image
 
     environment:
       POSTGRES_USER: waterHeater # set the Postgres username
