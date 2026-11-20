@@ -21,7 +21,7 @@ export const assignPools = (participants: string[], numberGroups: number, filler
     }
 
     // Calculate the maximum group size
-    const maxGroupSize = Math.max(...groups.map(group => group.length));
+    const maxGroupSize = Math.max(...groups.map((group) => group.length));
 
     // Fill up each group to the maximum size
     while (true) {
@@ -44,7 +44,7 @@ export const assignPools = (participants: string[], numberGroups: number, filler
         }
 
         // Break the loop if all groups have been filled
-        if (groups.every(toCheckGroup => toCheckGroup.length === maxGroupSize)) {
+        if (groups.every((toCheckGroup) => toCheckGroup.length === maxGroupSize)) {
             break;
         }
     }

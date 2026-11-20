@@ -17,6 +17,6 @@ export class PayoutService {
         // Calculate the remaining amount
         const remaining = amountToPayout - fiftyPercent - thirtyPercent - twentyPercent;
 
-        return { fiftyPercent, thirtyPercent, twentyPercent, remaining };
+        return { fiftyPercent, remaining, thirtyPercent, twentyPercent };
     }
 }

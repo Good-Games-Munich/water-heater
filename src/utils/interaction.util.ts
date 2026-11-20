@@ -1,4 +1,4 @@
-import type { CommandInteraction } from 'discord.js';
+import { type CommandInteraction } from 'discord.js';
 
 export const getNicknameOrDisplayName = (interaction: CommandInteraction) => {
     // Check if the interaction has a member and a nickname

@@ -2,10 +2,11 @@ import { SeedDto } from '../dtos/commands/seed.dto';
 import { SeedService } from '../services/seed.service';
 import { ComponentId } from '../shared/enums/component-id.enum';
 import { Injectable, Logger } from '@nestjs/common';
-import type { InteractionResponse, ModalActionRowComponentBuilder } from 'discord.js';
 import {
     ActionRowBuilder,
     codeBlock,
+    type InteractionResponse,
+    type ModalActionRowComponentBuilder,
     ModalBuilder,
     TextInputBuilder,
     TextInputStyle,
@@ -31,11 +32,11 @@ export class SeedCommands {
 
     // SlashCommand decorator to define the onSeed method as a slash command
     @SlashCommand({
-        name: 'seed',
         description: 'Group seed for challonge.',
         descriptionLocalizations: {
             de: 'Gruppen seed für challonge.',
         },
+        name: 'seed',
     })
     // Method to handle the seed command
     public async onSeed(

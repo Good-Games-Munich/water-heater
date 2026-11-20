@@ -1,5 +1,5 @@
 import { BaseController } from '../decorators/base-controller.decorator';
-import type { WeeklyParticipant } from '../entities/weekly-participant.entity';
+import { type WeeklyParticipant } from '../entities/weekly-participant.entity';
 import { WeeklyParticipantService } from '../services/weekly-participant.service';
 import { WeeklyNotFoundError } from '../shared/errors/business/weekly-not-found.error';
 import { Get, Param } from '@nestjs/common';
@@ -12,8 +12,8 @@ export class WeeklyController {
     @Get('participants/:guildId')
     @ApiOkResponse({
         description: 'Returns all participants of the weekly for the given guild.',
-        type: String,
         isArray: true,
+        type: String,
     })
     public async getAllParticipants(@Param('guildId') guildId: string): Promise<string[]> {
         let weeklyParticipants: WeeklyParticipant[];
@@ -28,6 +28,6 @@ export class WeeklyController {
             }
         }
 
-        return weeklyParticipants.map(weeklyParticipant => weeklyParticipant.name);
+        return weeklyParticipants.map((weeklyParticipant) => weeklyParticipant.name);
     }
 }

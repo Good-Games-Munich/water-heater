@@ -12,14 +12,14 @@ export class GuildConfiguration {
     public guildId!: string;
 
     // Debug channel ID column
-    @Column({ type: String, default: null, nullable: true })
-    public debugChannelId!: string | null;
+    @Column({ default: null, nullable: true, type: String })
+    public debugChannelId!: null | string;
 
     // Weekly day column
     @Column({
-        type: 'enum',
-        enum: Day,
         default: Day.THURSDAY,
+        enum: Day,
+        type: 'enum',
     })
     public weeklyDay!: Day;
 }

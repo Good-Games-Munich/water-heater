@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { IntentsBitField } from 'discord.js';
-import type { NecordModuleOptions } from 'necord';
+import { type NecordModuleOptions } from 'necord';
 
 @Injectable()
 export class NecordConfigService {
@@ -11,9 +11,9 @@ export class NecordConfigService {
     // Method to create Necord options
     public createNecordOptions(): NecordModuleOptions {
         return {
-            token: this.configService.get<string>('DISCORD_BOT_TOKEN') ?? '', // Get the Discord bot token from the environment variables
-            intents: [IntentsBitField.Flags.Guilds], // Set the Discord bot intents
             development: this.getDevelopmentOptions(), // Get the development options
+            intents: [IntentsBitField.Flags.Guilds], // Set the Discord bot intents
+            token: this.configService.get<string>('DISCORD_BOT_TOKEN') ?? '', // Get the Discord bot token from the environment variables
         };
     }
 

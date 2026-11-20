@@ -15,13 +15,13 @@ export class PayoutCommands {
 
     // SlashCommand decorator to define the onPayout method as a slash command
     @SlashCommand({
-        name: 'payout',
-        nameLocalizations: {
-            de: 'auszahlung',
-        },
         description: 'Calculate the payouts after 50/30/20.',
         descriptionLocalizations: {
             de: 'Berechnet die Auszahlung nach 50/30/20.',
+        },
+        name: 'payout',
+        nameLocalizations: {
+            de: 'auszahlung',
         },
     })
     // Method to handle the payout command
@@ -39,9 +39,9 @@ export class PayoutCommands {
             return await interaction.reply({
                 content: t('replies:commands.payout.successful', {
                     fiftyPercent: payouts.fiftyPercent,
+                    remaining: payouts.remaining,
                     thirtyPercent: payouts.thirtyPercent,
                     twentyPercent: payouts.twentyPercent,
-                    remaining: payouts.remaining,
                 }),
                 ephemeral: true,
             });

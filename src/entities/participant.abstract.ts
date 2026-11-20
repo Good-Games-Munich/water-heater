@@ -10,6 +10,6 @@ export abstract class Participant {
     public name!: string;
 
     // Entry date column
-    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+    @Column({ default: () => 'CURRENT_TIMESTAMP', type: 'timestamp' })
     public entryDate!: Date;
 }

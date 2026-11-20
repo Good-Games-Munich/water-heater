@@ -7,12 +7,12 @@ import { Context, SlashCommand, SlashCommandContext } from 'necord';
 export class TestCommands {
     // SlashCommand decorator to define the onPing method as a slash command
     @SlashCommand({
-        name: 'ping',
+        defaultMemberPermissions: [PermissionFlagsBits.Administrator],
         description: 'Ping-Pong test command',
         descriptionLocalizations: {
             de: 'Ping-Pong Testbefehl',
         },
-        defaultMemberPermissions: [PermissionFlagsBits.Administrator],
+        name: 'ping',
     })
     // Method to handle the ping command
     public async onPing(

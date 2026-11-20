@@ -7,15 +7,14 @@ import { NecordConfigService } from './configs/necord-config.service';
 import { OrmConfigService } from './configs/orm-config.service';
 import { WeeklyController } from './controllers/weekly.controller';
 import { GuildConfiguration } from './entities/guild-configuration.entity';
-import { Weekly } from './entities/weekly.entity';
 import { WeeklyParticipant } from './entities/weekly-participant.entity';
+import { Weekly } from './entities/weekly.entity';
 import { OnApplicationBootstrapHook } from './lifecycle/on-application-bootstrap.hook';
 import { GuildConfigurationService } from './services/guild-configuration.service';
 import { PayoutService } from './services/payout.service';
 import { SeedService } from './services/seed.service';
 import { WeeklyParticipantService } from './services/weekly-participant.service';
-import type { ModuleMetadata } from '@nestjs/common';
-import { Logger, Module } from '@nestjs/common';
+import { Logger, Module, type ModuleMetadata } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { NecordModule } from 'necord';
@@ -36,11 +35,11 @@ export class AppModule {
             ...(testing
                 ? [
                       TypeOrmModule.forRoot({
-                          type: 'better-sqlite3',
                           database: ':memory:',
                           dropSchema: true,
-                          synchronize: true,
                           entities: [WeeklyParticipant, Weekly, GuildConfiguration],
+                          synchronize: true,
+                          type: 'better-sqlite3',
                       }),
                   ]
                 : [
@@ -57,8 +56,9 @@ export class AppModule {
         ];
         // object with module, imports, and providers properties
         return {
-            module: AppModule,
+            controllers: [WeeklyController],
             imports,
+            module: AppModule,
             providers: [
                 // OnApplicationBootstrapHook to execute code after the application has been bootstrapped
                 OnApplicationBootstrapHook,
@@ -76,7 +76,6 @@ export class AppModule {
                 TestCommands,
                 GuildConfigurationWeeklyCommands,
             ],
-            controllers: [WeeklyController],
         };
     }
 }

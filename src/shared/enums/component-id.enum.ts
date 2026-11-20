@@ -1,8 +1,8 @@
 // Enum values for various component IDs
 export enum ComponentId {
     DEBUG_CANNEL_SELECTOR = 'debug-channel-selector',
-    SEEDED_LIST_INPUT = 'seeded-list-input',
     SEED_MODAL = 'seed-modal',
+    SEEDED_LIST_INPUT = 'seeded-list-input',
     WEEKLY_DAY_SELECTOR = 'weekly-day-selector',
     WEEKLY_PARTICIPANTS_BULK_CONFIRM_FREESTYLE_BUTTON = 'weekly-participants-bulk-confirm-freestyle-button',
     WEEKLY_PARTICIPANTS_BULK_CONFIRM_INPUT = 'weekly-participants-bulk-confirm-input',

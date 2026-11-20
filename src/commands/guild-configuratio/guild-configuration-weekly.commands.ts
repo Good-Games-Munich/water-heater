@@ -3,8 +3,7 @@ import { ComponentId } from '../../shared/enums/component-id.enum';
 import { Day } from '../../shared/enums/day.enum';
 import { GuildConfigurationDecorator } from './guild-configuration.commands-group';
 import { Injectable, Logger } from '@nestjs/common';
-import type { InteractionResponse } from 'discord.js';
-import { ActionRowBuilder, StringSelectMenuBuilder } from 'discord.js';
+import { ActionRowBuilder, type InteractionResponse, StringSelectMenuBuilder } from 'discord.js';
 import { changeLanguage, t } from 'i18next';
 import {
     Context,
@@ -17,11 +16,11 @@ import {
 
 @Injectable()
 @GuildConfigurationDecorator({
-    name: 'weekly',
     description: 'Configure the weekly for your guild',
     descriptionLocalizations: {
         de: 'Konfiguriert das weekly für deinen Server',
     },
+    name: 'weekly',
 })
 export class GuildConfigurationWeeklyCommands {
     // Constructor that injects GuildConfigurationService and Logger
@@ -32,11 +31,11 @@ export class GuildConfigurationWeeklyCommands {
 
     // Subcommand decorator to define the onConfigureWeeklyDay method as a subcommand of the weekly command
     @Subcommand({
-        name: 'day',
         description: 'Configure the day of the weekly for your guild',
         descriptionLocalizations: {
             de: 'Konfiguriert den Tag des weeklies für deinen Server',
         },
+        name: 'day',
     })
     // Method to handle the configuration of the day of the weekly
     public async onConfigureWeeklyDay(
@@ -46,7 +45,7 @@ export class GuildConfigurationWeeklyCommands {
             await changeLanguage(interaction.locale);
 
             // Create an array of day options
-            const dayOptions = Object.values(Day).map(day => ({
+            const dayOptions = Object.values(Day).map((day) => ({
                 label: t(`values:day.${day}`),
                 value: day,
             }));
@@ -65,8 +64,8 @@ export class GuildConfigurationWeeklyCommands {
 
             // Reply to the interaction with the row of components
             return await interaction.reply({
-                content: t('replies:commands.configure.weekly.day.weekDaySelectorOpen'),
                 components: [row],
+                content: t('replies:commands.configure.weekly.day.weekDaySelectorOpen'),
                 ephemeral: true,
             });
         } catch (error) {

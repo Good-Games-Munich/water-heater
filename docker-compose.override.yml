@@ -1,24 +1,22 @@
-version: "3.8"
 services:
-  water-heater:
-    container_name: waterHeaterDev # set the container name for the development environment
-
-    command: npm run start:dev # run the start:dev script
-
-    environment:
-      FORCE_COLOR: 1 # set the FORCE_COLOR environment variable to 1
-      DISCORD_DEVELOPMENT_GUILD_ID: ${DISCORD_DEVELOPMENT_GUILD_ID?Missing environment variable see readme} # set the Discord development guild ID
-
-    volumes:
-      - ./src:/app/src # mount the src directory to the container's /app/src directory
-      - ./tsconfig.json:/app/tsconfig.json # mount the tsconfig.json file to the container's /app/tsconfig.json file
-
-    ports:
-      - ${INSPECT_PORT-9229}:9229 # map the container's 9229 port to the host's INSPECT_PORT or 9229 if INSPECT_PORT is not set
-      - ${APPLICATION_PORT-3200}:80 # map the container's 80 port to the host's APPLICATION_PORT or 3200 if APPLICATION_PORT is not set
-
   postgres:
     container_name: waterHeaterPostgresDev # set the container name for the development environment
 
     environment:
       FORCE_COLOR: 1 # set the FORCE_COLOR environment variable to 1
+  water-heater:
+    command: npm run start:dev # run the start:dev script
+
+    container_name: waterHeaterDev # set the container name for the development environment
+
+    environment:
+      DISCORD_DEVELOPMENT_GUILD_ID: ${DISCORD_DEVELOPMENT_GUILD_ID?Missing environment variable see readme} # set the Discord development guild ID
+
+      FORCE_COLOR: 1 # set the FORCE_COLOR environment variable to 1
+    ports:
+      - ${INSPECT_PORT-9229}:9229 # map the container's 9229 port to the host's INSPECT_PORT or 9229 if INSPECT_PORT is not set
+      - ${APPLICATION_PORT-3200}:80 # map the container's 80 port to the host's APPLICATION_PORT or 3200 if APPLICATION_PORT is not set
+    volumes:
+      - ./src:/app/src # mount the src directory to the container's /app/src directory
+      - ./tsconfig.json:/app/tsconfig.json # mount the tsconfig.json file to the container's /app/tsconfig.json file
+

@@ -1,4 +1,11 @@
 ---
+# https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobs
+jobs:
+  deploy:
+    # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idsecretsinherit
+    secrets: inherit
+    # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsuses
+    uses: Good-Games-Munich/reusable-workflows/.github/workflows/production-deploy.yml@main
 # https://github.github.io/actions-cheat-sheet/actions-cheat-sheet.pdf
 # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#name
 name: "Deploy service to production"
@@ -8,11 +15,3 @@ on:
   release:
     types:
       - created
-
-# https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobs
-jobs:
-  deploy:
-    # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsuses
-    uses: Good-Games-Munich/reusable-workflows/.github/workflows/production-deploy.yml@main
-    # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idsecretsinherit
-    secrets: inherit

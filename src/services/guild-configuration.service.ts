@@ -1,6 +1,5 @@
 import { GuildConfiguration } from '../entities/guild-configuration.entity';
-import type { Day } from '../shared/enums/day.enum';
-// eslint-disable-next-line import/no-cycle
+import { type Day } from '../shared/enums/day.enum';
 import { WeeklyParticipantService } from './weekly-participant.service';
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -35,7 +34,7 @@ export class GuildConfigurationService {
             guildConfiguration.debugChannelId = debugChannelId;
             await this.guildConfigurationRepository.save(guildConfiguration);
         } else {
-            await this.guildConfigurationRepository.save({ guildId, debugChannelId });
+            await this.guildConfigurationRepository.save({ debugChannelId, guildId });
         }
     }
 

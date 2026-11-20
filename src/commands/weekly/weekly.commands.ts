@@ -1,4 +1,4 @@
-import type { WeeklyParticipant } from '../../entities/weekly-participant.entity';
+import { type WeeklyParticipant } from '../../entities/weekly-participant.entity';
 import { WeeklyParticipantService } from '../../services/weekly-participant.service';
 import { ComponentId } from '../../shared/enums/component-id.enum';
 import { ParticipantAlreadyConfirmedError } from '../../shared/errors/business/participant-already-confirmed.error';
@@ -7,12 +7,13 @@ import { WeeklyNotFoundError } from '../../shared/errors/business/weekly-not-fou
 import { getNicknameOrDisplayName } from '../../utils/interaction.util';
 import { WeeklyDecorator } from './weekly.commands-group';
 import { Injectable, Logger } from '@nestjs/common';
-import type { InteractionResponse, ModalActionRowComponentBuilder } from 'discord.js';
 import {
     ActionRowBuilder,
     ButtonBuilder,
     ButtonStyle,
     codeBlock,
+    type InteractionResponse,
+    type ModalActionRowComponentBuilder,
     ModalBuilder,
     PermissionFlagsBits,
     StringSelectMenuBuilder,
@@ -50,13 +51,13 @@ export class WeeklyCommands {
     ) {}
 
     @Subcommand({
-        name: 'bulk-confirm',
-        nameLocalizations: {
-            de: 'bulk-bestätigen',
-        },
         description: 'Bulk confirm weekly participants',
         descriptionLocalizations: {
             de: 'Bestätigt mehrere weekly Teilnehmer',
+        },
+        name: 'bulk-confirm',
+        nameLocalizations: {
+            de: 'bulk-bestätigen',
         },
     })
     public async onBulkConfirm(
@@ -90,8 +91,8 @@ export class WeeklyCommands {
             );
 
             return await interaction.reply({
-                content: t('replies:commands.weekly.bulkConfirm.bulkConfirmComponentShown'),
                 components: [selectRow, freestyleRow],
+                content: t('replies:commands.weekly.bulkConfirm.bulkConfirmComponentShown'),
                 ephemeral: true,
             });
         } catch (error) {
@@ -171,7 +172,7 @@ export class WeeklyCommands {
             let weeklyParticipants: string[] = [];
 
             try {
-                weeklyParticipants = members.map(member => {
+                weeklyParticipants = members.map((member) => {
                     if ('nickname' in member && member.nickname) {
                         return member.nickname;
                     }
@@ -277,13 +278,13 @@ export class WeeklyCommands {
     }
 
     @Subcommand({
-        name: 'bulk-deconfirm',
-        nameLocalizations: {
-            de: 'bulk-debestätigen',
-        },
         description: 'Bulk deconfirm weekly participants',
         descriptionLocalizations: {
             de: 'Debestätigt mehrere weekly Teilnehmer',
+        },
+        name: 'bulk-deconfirm',
+        nameLocalizations: {
+            de: 'bulk-debestätigen',
         },
     })
     public async onBulkDeconfirm(
@@ -336,7 +337,7 @@ export class WeeklyCommands {
                     .setMaxValues(weeklyParticipants.length > 25 ? 25 : weeklyParticipants.length)
                     .setMinValues(1)
                     .setOptions(
-                        weeklyParticipants.map(weeklyParticipant => ({
+                        weeklyParticipants.map((weeklyParticipant) => ({
                             label: weeklyParticipant.name,
                             value: weeklyParticipant.name,
                         })),
@@ -344,8 +345,8 @@ export class WeeklyCommands {
             );
 
             return await interaction.reply({
-                content: t('replies:commands.weekly.bulkDeconfirm.participantsSelectorOpen'),
                 components: [row],
+                content: t('replies:commands.weekly.bulkDeconfirm.participantsSelectorOpen'),
                 ephemeral: true,
             });
         } catch (error) {
@@ -416,23 +417,23 @@ export class WeeklyCommands {
     }
 
     @SlashCommand({
-        name: 'confirm',
-        nameLocalizations: {
-            de: 'bestätigen',
-        },
         description: 'Legacy use /weekly confirm instead',
         descriptionLocalizations: {
             de: 'Legacy benutze /weekly bestätigen stattdessen',
         },
-    })
-    @Subcommand({
         name: 'confirm',
         nameLocalizations: {
             de: 'bestätigen',
         },
+    })
+    @Subcommand({
         description: 'Confirm your participation in the next weekly',
         descriptionLocalizations: {
             de: 'Bestätigt die Teilnahme an dem nächsten weekly',
+        },
+        name: 'confirm',
+        nameLocalizations: {
+            de: 'bestätigen',
         },
     })
     public async onConfirm(
@@ -474,23 +475,23 @@ export class WeeklyCommands {
     }
 
     @SlashCommand({
-        name: 'deconfirm',
-        nameLocalizations: {
-            de: 'debestätigen',
-        },
         description: 'Legacy use /weekly deconfirm instead',
         descriptionLocalizations: {
             de: 'Legacy benutze /weekly debestätigen stattdessen',
         },
-    })
-    @Subcommand({
         name: 'deconfirm',
         nameLocalizations: {
             de: 'debestätigen',
         },
+    })
+    @Subcommand({
         description: 'Deconfirm your participation in the next weekly',
         descriptionLocalizations: {
             de: 'Debestätigt die Teilnahme an dem nächsten weekly',
+        },
+        name: 'deconfirm',
+        nameLocalizations: {
+            de: 'debestätigen',
         },
     })
     public async onDeconfirm(
@@ -532,13 +533,13 @@ export class WeeklyCommands {
     }
 
     @Subcommand({
-        name: 'history',
-        nameLocalizations: {
-            de: 'historie',
-        },
         description: 'Lists pasts weekly participants',
         descriptionLocalizations: {
             de: 'Listet vergangene weekly Teilnehmer auf',
+        },
+        name: 'history',
+        nameLocalizations: {
+            de: 'historie',
         },
     })
     public async onHistory(
@@ -575,7 +576,7 @@ export class WeeklyCommands {
                     .setMaxValues(pastWeeklyDates.length > 25 ? 25 : pastWeeklyDates.length)
                     .setMinValues(1)
                     .setOptions(
-                        pastWeeklyDates.map(pastWeeklyDate => ({
+                        pastWeeklyDates.map((pastWeeklyDate) => ({
                             label: pastWeeklyDate.toLocaleDateString('de-DE'), // Hardcoded locale since slashes seem to be broken in discord
                             value: pastWeeklyDate.getTime().toString(),
                         })),
@@ -583,8 +584,8 @@ export class WeeklyCommands {
             );
 
             return await interaction.reply({
-                content: t('replies:commands.weekly.history.participantsHistoryDatesSelectorOpen'),
                 components: [row],
+                content: t('replies:commands.weekly.history.participantsHistoryDatesSelectorOpen'),
                 ephemeral: true,
             });
         } catch (error) {
@@ -620,7 +621,7 @@ export class WeeklyCommands {
             }
 
             const selectedDates = selected.map(
-                selectedDate => new Date(Number.parseInt(selectedDate, 10)),
+                (selectedDate) => new Date(Number.parseInt(selectedDate, 10)),
             );
 
             const weeklyParticipantHistories =
@@ -629,9 +630,9 @@ export class WeeklyCommands {
                     selectedDates,
                 );
 
-            const historyStrings = weeklyParticipantHistories.map(weeklyParticipantHistory => {
+            const historyStrings = weeklyParticipantHistories.map((weeklyParticipantHistory) => {
                 const weeklyParticipants = weeklyParticipantHistory.participants.map(
-                    weeklyParticipant => weeklyParticipant.name,
+                    (weeklyParticipant) => weeklyParticipant.name,
                 );
 
                 return `${weeklyParticipantHistory.date.toLocaleDateString(
@@ -655,13 +656,13 @@ export class WeeklyCommands {
     }
 
     @Subcommand({
-        name: 'participants',
-        nameLocalizations: {
-            de: 'teilnehmer',
-        },
         description: 'Lists all weekly participants',
         descriptionLocalizations: {
             de: 'Listet alle weekly Teilnehmer auf',
+        },
+        name: 'participants',
+        nameLocalizations: {
+            de: 'teilnehmer',
         },
     })
     public async onParticipants(
@@ -703,7 +704,7 @@ export class WeeklyCommands {
                     count: weeklyParticipants.length,
                     participants: codeBlock(
                         weeklyParticipants
-                            .map(weeklyParticipant => weeklyParticipant.name)
+                            .map((weeklyParticipant) => weeklyParticipant.name)
                             .join('\n'),
                     ),
                 }),
